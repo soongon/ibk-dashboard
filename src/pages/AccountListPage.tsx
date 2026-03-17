@@ -1,11 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { useAuthStore } from '../stores/useAuthStore';
 import { Account } from '../types/Account';
 import { sampleAccounts } from '../mocks/accounts';
 import AccountCard from '../components/AccountCard';
 
 export default function AccountListPage() {
   const [accounts] = useState<Account[]>(sampleAccounts);
+  const username = useAuthStore((state) => state.username);
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
   const activeCount = accounts.filter((acc) => acc.isActive).length;
@@ -21,6 +27,15 @@ export default function AccountListPage() {
               </svg>
             </div>
             <h1 className="text-lg font-bold">IBK 계좌 관리</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
+              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs font-bold">
+                {username.charAt(0).toUpperCase()}
+              </div>
+              <span className="text-sm">{username}님</span>
+            </div>
+            <button onClick={handleLogout} className="text-sm text-blue-200 hover:text-white transition-colors">로그아웃</button>
           </div>
         </div>
       </header>
