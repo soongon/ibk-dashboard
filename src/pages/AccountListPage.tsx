@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import AccountCard from './components/AccountCard';
-import { Account } from './types/Account';
-import { sampleAccounts } from './mocks/accounts';
+import { Link } from 'react-router';
+import { Account } from '../types/Account';
+import { sampleAccounts } from '../mocks/accounts';
+import AccountCard from '../components/AccountCard';
 
-export default function App() {
+export default function AccountListPage() {
   const [accounts] = useState<Account[]>(sampleAccounts);
 
   const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
@@ -45,7 +46,6 @@ export default function App() {
 
       <main className="max-w-4xl mx-auto px-6 py-6">
         <h2 className="text-base font-bold text-gray-900 mb-5">계좌 목록</h2>
-
         {accounts.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
             <p className="text-gray-400 mb-1">등록된 계좌가 없습니다.</p>
@@ -53,7 +53,9 @@ export default function App() {
         ) : (
           <div className="grid gap-3">
             {accounts.map((acc) => (
-              <AccountCard key={acc.id} account={acc} />
+              <Link key={acc.id} to={`/accounts/${acc.id}`} className="block">
+                <AccountCard account={acc} />
+              </Link>
             ))}
           </div>
         )}
