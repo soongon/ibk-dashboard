@@ -73,7 +73,15 @@ export default function AccountListPage() {
       )}
 
       <main className="max-w-4xl mx-auto px-6 py-6">
-        <h2 className="text-base font-bold text-gray-900 mb-5">계좌 목록</h2>
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-base font-bold text-gray-900">계좌 목록</h2>
+          <Link to="/accounts/new" className="inline-flex items-center gap-1.5 bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors shadow-sm">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            계좌 등록
+          </Link>
+        </div>
 
         {loading ? (
           <div className="text-center py-16">
@@ -88,12 +96,19 @@ export default function AccountListPage() {
             <p className="text-red-500 font-medium mb-1">{error}</p>
             <p className="text-gray-400 text-sm mb-4">json-server가 실행 중인지 확인해주세요.</p>
             <button onClick={fetchAccounts} className="inline-flex items-center gap-1.5 bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors ring-1 ring-red-200">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+              </svg>
               다시 시도
             </button>
           </div>
         ) : accounts.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
+            <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+            </svg>
             <p className="text-gray-400 mb-1">등록된 계좌가 없습니다.</p>
+            <p className="text-gray-300 text-sm">위의 '계좌 등록' 버튼으로 첫 계좌를 추가해보세요.</p>
           </div>
         ) : (
           <div className="grid gap-3">
