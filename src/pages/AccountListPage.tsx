@@ -1,15 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { getAccounts } from '../api/accountApi';
 import { useAuthStore } from '../stores/useAuthStore';
 import { Account } from '../types/Account';
-import { sampleAccounts } from '../mocks/accounts';
 import AccountCard from '../components/AccountCard';
 
 export default function AccountListPage() {
-  const [accounts] = useState<Account[]>(sampleAccounts);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const username = useAuthStore((state) => state.username);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
+
+  const fetchAccounts = () => {
+    setLoading(true);
+    setError('');
+    getAccounts()
+      .then(setAccounts)
+      .catch(() => setError('계좌 목록을 불러오는 데 실패했습니다.'))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { fetchAccounts(); }, []);
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
@@ -40,7 +53,7 @@ export default function AccountListPage() {
         </div>
       </header>
 
-      {accounts.length > 0 && (
+      {!loading && !error && accounts.length > 0 && (
         <div className="max-w-4xl mx-auto px-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mt-6 grid grid-cols-3 divide-x divide-gray-100">
             <div className="text-center px-4">
@@ -61,7 +74,24 @@ export default function AccountListPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-6">
         <h2 className="text-base font-bold text-gray-900 mb-5">계좌 목록</h2>
-        {accounts.length === 0 ? (
+
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="inline-block w-8 h-8 border-2 border-blue-200 border-t-blue-900 rounded-full animate-spin mb-3" />
+            <p className="text-gray-400 text-sm">계좌 정보를 불러오는 중...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16 bg-white rounded-xl border border-red-200">
+            <svg className="w-12 h-12 text-red-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            <p className="text-red-500 font-medium mb-1">{error}</p>
+            <p className="text-gray-400 text-sm mb-4">json-server가 실행 중인지 확인해주세요.</p>
+            <button onClick={fetchAccounts} className="inline-flex items-center gap-1.5 bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors ring-1 ring-red-200">
+              다시 시도
+            </button>
+          </div>
+        ) : accounts.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
             <p className="text-gray-400 mb-1">등록된 계좌가 없습니다.</p>
           </div>
