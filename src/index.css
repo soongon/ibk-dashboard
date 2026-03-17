@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Tailwind v4 기본 리셋 보완 */
+body {
+  color: #111827; /* gray-900 */
+}
+
+input, textarea, select {
+  color: inherit;
+}
